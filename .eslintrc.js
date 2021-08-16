@@ -3,7 +3,7 @@ module.exports = {
   env: {
     es6: true,
     node: true,
-    jest: true
+    jest: true,
   },
   extends: [
     'eslint:recommended',
@@ -16,7 +16,7 @@ module.exports = {
   parser: '@typescript-eslint/parser',
   parserOptions: {
     ecmaFeatures: {
-      jsx: true
+      jsx: true,
     },
     ecmaVersion: 12,
     sourceType: 'module',
@@ -28,27 +28,13 @@ module.exports = {
     'react-hooks',
     '@typescript-eslint',
     'simple-import-sort',
-    'eslint-plugin-prettier'
+    'eslint-plugin-prettier',
   ],
   rules: {
-    'indent': [
-      'error',
-      2,
-      { SwitchCase: 1 }
-    ],
-    'linebreak-style': [
-      'error',
-      'unix'
-    ],
-    'quotes': [
-      'error',
-      'single',
-      { avoidEscape: true }
-    ],
-    'semi': [
-      'error',
-      'never'
-    ],
+    indent: ['error', 2, { SwitchCase: 1 }],
+    'linebreak-style': ['error', 'unix'],
+    quotes: ['error', 'single', { avoidEscape: true }],
+    semi: ['error', 'never'],
     'react/prop-types': 'off',
     '@typescript-eslint/no-extra-semi': 'off',
     '@typescript-eslint/no-floating-promises': 'off',
@@ -56,13 +42,14 @@ module.exports = {
     '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/no-unsafe-member-access': 'off',
     '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/restrict-plus-operands': 'off',
     'simple-import-sort/imports': 'error',
     'simple-import-sort/exports': 'error',
-    'prettier/prettier': 'error'
+    'prettier/prettier': 'error',
   },
-  'settings': {
+  settings: {
     react: {
-      version: 'detect'
-    }
-  }
-};
+      version: 'detect',
+    },
+  },
+}

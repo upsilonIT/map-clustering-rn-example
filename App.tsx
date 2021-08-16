@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, View } from 'react-native'
-import MapView, { Marker, Region } from 'react-native-maps'
+import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Marker, Region } from 'react-native-maps'
 
+import ClusteredMapView from './components/ClusteredMapView'
 import MapZoomPanel from './components/MapZoomPanel'
 
 function getRandomLatitude(min = 48, max = 56) {
@@ -22,12 +23,12 @@ function App(): JSX.Element {
   const [markers, setMarkers] = useState<Markers[]>([
     { id: 0, latitude: 53.91326738786109, longitude: 27.523712915343737 },
   ])
-  const region: Region = {
+  const [region, setRegion] = useState<Region>({
     latitude: 53.91326738786109,
     longitude: 27.523712915343737,
-    latitudeDelta: 0.1,
-    longitudeDelta: 0.1,
-  }
+    latitudeDelta: 1.5,
+    longitudeDelta: 1.5,
+  })
   const map = React.useRef(null)
 
   const generateMarkers = React.useCallback((lat: number, long: number) => {
@@ -59,6 +60,10 @@ function App(): JSX.Element {
     }
   }
 
+  const getZoomFromRegion = (region: Region) => {
+    return Math.round(Math.log(360 / region.longitudeDelta) / Math.LN2)
+  }
+
   const mapZoomIn = () => {
     if (zoom > 18) {
       setZoom(18)
@@ -78,10 +83,19 @@ function App(): JSX.Element {
       map.current.animateToRegion(regn, 200)
     }
   }
-
+  const onRegionChangeComplete = (newRegion: Region) => {
+    setZoom(getZoomFromRegion(newRegion))
+    setRegion(newRegion)
+  }
   return (
     <View style={styles.container}>
-      <MapView ref={map} mapType="hybrid" style={styles.mapView} initialRegion={region}>
+      <ClusteredMapView
+        clusterColor="red"
+        ref={map}
+        mapType="hybrid"
+        style={styles.mapView}
+        initialRegion={region}
+        onRegionChangeComplete={onRegionChangeComplete}>
         {markers.map((item) => (
           <Marker
             key={item.id}
@@ -90,7 +104,7 @@ function App(): JSX.Element {
               longitude: item.longitude,
             }}></Marker>
         ))}
-      </MapView>
+      </ClusteredMapView>
       <MapZoomPanel
         onZoomIn={() => {
           mapZoomIn()
@@ -111,6 +125,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   mapView: { flex: 1, width: '100%', height: '100%' },
+  customMarker: {
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    width: 50,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 })
 
 export default App
