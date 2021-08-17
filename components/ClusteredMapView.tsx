@@ -1,10 +1,11 @@
 /* 
-  This component is taken from the venits / react-native-map-clustering repository and 
+  This component is taken from the venits/react-native-map-clustering repository and 
   imported into ours so that you can replace something and experiment with working with 
   clusters yourself.
   
   Some parts of this code may have already been changed.
 */
+
 import React, { forwardRef, memo, useEffect, useMemo, useRef, useState } from 'react'
 import { Dimensions, LayoutAnimation, Platform } from 'react-native'
 import MapView, { MapViewProps, Polyline } from 'react-native-maps'
@@ -104,7 +105,9 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
     }, [propsChildren, clusteringEnabled])
 
     useEffect(() => {
-      if (!spiralEnabled) return
+      if (!spiralEnabled) {
+        return
+      }
 
       if (isSpiderfier && markers.length > 0) {
         const allSpiderMarkers = []
@@ -132,9 +135,13 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           LayoutAnimation.configureNext(layoutAnimationConf)
         }
         if (zoom >= 18 && markers.length > 0 && clusterChildren) {
-          if (spiralEnabled) updateSpiderfier(true)
+          if (spiralEnabled) {
+            updateSpiderfier(true)
+          }
         } else {
-          if (spiralEnabled) updateSpiderfier(false)
+          if (spiralEnabled) {
+            updateSpiderfier(false)
+          }
         }
         updateMarkers(markers)
         onMarkersChange(markers)
@@ -171,7 +178,9 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         {...restProps}
         ref={(map) => {
           mapRef.current = map
-          if (ref) ref.current = map
+          if (ref) {
+            ref.current = map
+          }
           restProps.mapRef(map)
         }}
         onRegionChangeComplete={_onRegionChangeComplete}>

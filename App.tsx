@@ -1,17 +1,34 @@
 import React, { useEffect, useState } from 'react'
-import { Dimensions, StyleSheet, Text, View } from 'react-native'
+import { Dimensions, StyleSheet, View } from 'react-native'
 import { Marker, Region } from 'react-native-maps'
 
 import ClusteredMapView from './components/ClusteredMapView'
 import MapZoomPanel from './components/MapZoomPanel'
 
-function getRandomLatitude(min = 48, max = 56) {
+const getRandomLatitude = (min = 48, max = 56) => {
   return Math.random() * (max - min) + min
 }
 
-function getRandomLongitude(min = 14, max = 24) {
+const getRandomLongitude = (min = 14, max = 24) => {
   return Math.random() * (max - min) + min
 }
+
+const getRegionForZoom = (lat: number, lon: number, zoom: number) => {
+  const distanceDelta = Math.exp(Math.log(360) - zoom * Math.LN2)
+  const { width, height } = Dimensions.get('window')
+  const aspectRatio = width / height
+  return {
+    latitude: lat,
+    longitude: lon,
+    latitudeDelta: distanceDelta * aspectRatio,
+    longitudeDelta: distanceDelta,
+  }
+}
+
+const getZoomFromRegion = (region: Region) => {
+  return Math.round(Math.log(360 / region.longitudeDelta) / Math.LN2)
+}
+
 interface Markers {
   id: number
   latitude: number
@@ -19,7 +36,9 @@ interface Markers {
 }
 
 function App(): JSX.Element {
-  const [zoom, setZoom] = useState(18)
+  const map = React.useRef(null)
+
+  const [zoom, setZoom] = useState<number>(18)
   const [markers, setMarkers] = useState<Markers[]>([
     { id: 0, latitude: 53.91326738786109, longitude: 27.523712915343737 },
   ])
@@ -29,7 +48,6 @@ function App(): JSX.Element {
     latitudeDelta: 1.5,
     longitudeDelta: 1.5,
   })
-  const map = React.useRef(null)
 
   const generateMarkers = React.useCallback((lat: number, long: number) => {
     const markersArray = []
@@ -43,26 +61,6 @@ function App(): JSX.Element {
     }
     setMarkers(markersArray)
   }, [])
-
-  useEffect(() => {
-    generateMarkers(region.latitude, region.longitude)
-  }, [])
-
-  const getRegionForZoom = (lat: number, lon: number, zoom: number) => {
-    const distanceDelta = Math.exp(Math.log(360) - zoom * Math.LN2)
-    const { width, height } = Dimensions.get('window')
-    const aspectRatio = width / height
-    return {
-      latitude: lat,
-      longitude: lon,
-      latitudeDelta: distanceDelta * aspectRatio,
-      longitudeDelta: distanceDelta,
-    }
-  }
-
-  const getZoomFromRegion = (region: Region) => {
-    return Math.round(Math.log(360 / region.longitudeDelta) / Math.LN2)
-  }
 
   const mapZoomIn = () => {
     if (zoom > 18) {
@@ -83,10 +81,16 @@ function App(): JSX.Element {
       map.current.animateToRegion(regn, 200)
     }
   }
+
   const onRegionChangeComplete = (newRegion: Region) => {
     setZoom(getZoomFromRegion(newRegion))
     setRegion(newRegion)
   }
+
+  useEffect(() => {
+    generateMarkers(region.latitude, region.longitude)
+  }, [])
+
   return (
     <View style={styles.container}>
       <ClusteredMapView
