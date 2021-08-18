@@ -106,7 +106,8 @@ function App(): JSX.Element {
             coordinate={{
               latitude: item.latitude,
               longitude: item.longitude,
-            }}></Marker>
+            }}
+          />
         ))}
       </ClusteredMapView>
       <MapZoomPanel
