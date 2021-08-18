@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { Dimensions, StyleSheet, View } from 'react-native'
 import { Marker, Region } from 'react-native-maps'
 
@@ -36,7 +36,7 @@ interface Markers {
 }
 
 function App(): JSX.Element {
-  const map = React.useRef(null)
+  const map = useRef(null)
 
   const [zoom, setZoom] = useState<number>(18)
   const [markers, setMarkers] = useState<Markers[]>([
@@ -49,7 +49,7 @@ function App(): JSX.Element {
     longitudeDelta: 1.5,
   })
 
-  const generateMarkers = React.useCallback((lat: number, long: number) => {
+  const generateMarkers = useCallback((lat: number, long: number) => {
     const markersArray = []
 
     for (let i = 0; i < 50; i++) {
