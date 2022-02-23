@@ -1,5 +1,5 @@
 # React-Native Map Clustering
-
+On [our blog](https://www.upsilonit.com/blog/how-to-do-map-clustering-with-react-native), we described step by step how we used this code for clustering to display a large number of markers on a map.
 ## Installation
 
 Install **[Node.js](https://nodejs.org/en/)**
